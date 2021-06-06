@@ -1,31 +1,16 @@
 package com.example.shiv.myapplication.services;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.Binder;
-import android.os.IBinder;
 import android.util.Log;
 //import android.support.annotation.Nullable;
 
-import com.example.shiv.myapplication.R;
-import com.example.shiv.myapplication.config.ApiClient;
 import com.example.shiv.myapplication.config.SessionManager;
 import com.example.shiv.myapplication.modals.User;
-import com.example.shiv.myapplication.repositories.UserRepository;
 import com.example.shiv.myapplication.utils.Constants;
-import com.example.shiv.myapplication.utils.LoginUtils;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class AuthService {
 
@@ -35,19 +20,30 @@ public class AuthService {
         return str+"test me";
     }
 
-    public Map<String , String> login(User user){
+    public Map<String , String> login(Map< String, Object> authResponse){
 
         Map<String, String> loginResult = new HashMap<>();
         loginResult.put(Constants.STATUS , Constants.LOGIN_ATTRIBUTE.LOGIN_STATUS_FAILED);
         loginResult.put(Constants.ERROR , Constants.LOGIN_ATTRIBUTE.USERNAME_PASSWORD_INCORRECT);
 
-        if(user.getUsername().equals("test")){
-            SessionManager.INSTANCE.setUser(user);
-            loginResult.put(Constants.STATUS , Constants.LOGIN_ATTRIBUTE.LOGIN_STATUS_SUCCESS);
-
+        try{
+            String userJson = ServiceBinder.getJsonFromObject(authResponse.get(Constants.USER));
+            Gson g = new Gson();
+            String content = g.toJson(authResponse.get(Constants.USER));
+            User user = g.fromJson(content, User.class);
+            Log.i("login", "API-UserJson: "+content);
             Log.i("login", "API-User: "+user);
-        }
+            //ObjectMapper MAPPER = new ObjectMapper();
+            String token = authResponse.get(Constants.API_TOKEN).toString();
 
+            if(token != null){
+                SessionManager.INSTANCE.setUser(user);
+                SessionManager.INSTANCE.setAPIToken(token);
+                loginResult.put(Constants.STATUS , Constants.LOGIN_ATTRIBUTE.LOGIN_STATUS_SUCCESS);
+            }
+        }catch (Exception ex){
+            Log.e("Auth" , "Failed to login"+ex.getLocalizedMessage());
+        }
         return loginResult;
     }
 

@@ -12,7 +12,7 @@ public class LoginUtils {
         Map<String, String> validationResult = new HashMap<>();
 
         validationResult.put(Constants.STATUS , Constants.VALIDATION_STATUS_FAILED);
-        if(user.getUsername().equals("") || user.getCode().equals("")){
+        if(user.getUsername().equals("") || user.getPassword().equals("")){
             validationResult.put(Constants.ERROR , Constants.LOGIN_ATTRIBUTE.USERNAME_PASSWORD_NOT_EMPTY);
             return validationResult;
         }

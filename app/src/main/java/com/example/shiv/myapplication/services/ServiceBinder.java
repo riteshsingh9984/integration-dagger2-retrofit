@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public interface ServiceBinder {
 
-    public final static ObjectMapper MAPPER = new ObjectMapper();
+  public final static ObjectMapper MAPPER = new ObjectMapper();
 
   public static Intent addStringIntoIntent(Intent intent, String KEY, String VALUE){
 
@@ -36,9 +36,9 @@ public interface ServiceBinder {
       return null;
   }
 
-  public static Object getObjectFromJson(String json, Class T) {
+  public static <T> T getObjectFromJson(String json, Class<T> type) {
       try{
-          return MAPPER.readValue(json, T);
+          return (T) MAPPER.readValue(json, type);
       }catch (IOException io){
           Log.e(ServiceBinder.class.toString() , "Json Processing failed while reading from objectString ");
       }

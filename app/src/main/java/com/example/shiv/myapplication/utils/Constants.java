@@ -3,8 +3,8 @@ package com.example.shiv.myapplication.utils;
 public class Constants {
 
 
-    public static final String API_TOKEN = "API_TOKEN";
-    public static final String USER = "USER";
+    public static final String API_TOKEN = "token";
+    public static final String USER = "user";
     public static final String NONE = null;
     public static final boolean TRUE = true;
     public static final boolean FALSE = false;

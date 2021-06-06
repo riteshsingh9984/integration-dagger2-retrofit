@@ -34,4 +34,9 @@ public class BaseActivity extends Activity {
         startActivity(intent);
         finish();
     }
+
+    public static void headerAction(View view){
+        Log.i("HeaderAction","header clicked");
+    }
+
 }

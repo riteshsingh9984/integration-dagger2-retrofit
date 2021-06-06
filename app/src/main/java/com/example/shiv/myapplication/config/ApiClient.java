@@ -13,37 +13,56 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    private static Retrofit retrofit = null;
-
-    public static Retrofit getRetrofit(){
-
+    private static HttpLoggingInterceptor getHttpLoggingInterceptor(){
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        Interceptor interceptor = new Interceptor() {
+        return httpLoggingInterceptor;
+    }
+
+    private static Interceptor getInterceptor(boolean isSecured){
+        if(isSecured) {
+            return new Interceptor() {
+                @Override
+                public okhttp3.Response intercept(Chain chain) throws IOException {
+                    Request newRequest = chain.request().newBuilder()
+                            .addHeader(APIConstants.API_CONTENT_KEY, APIConstants.API_CONTENT_VALUE)
+                            // .addHeader(APIConstants.API_TOKEN_KEY, SessionManager.INSTANCE.getAPIToken())
+                            //.addHeader(APIConstants.API_TOKEN_KEY, "Bearer " + SessionManager.INSTANCE.getAPIToken())
+                            .build();
+
+                    return chain.proceed(newRequest);
+                }
+            };
+        }
+
+        return new Interceptor() {
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
                 Request newRequest = chain.request().newBuilder()
                         .addHeader(APIConstants.API_CONTENT_KEY, APIConstants.API_CONTENT_VALUE)
-                        // .addHeader(APIConstants.API_TOKEN_KEY, SessionManager.INSTANCE.getAPIToken())
+                        //.addHeader(APIConstants.ADMIN_REQUEST_KEY, APIConstants.ADMIN_REQUEST_VALUE)
                         //.addHeader(APIConstants.API_TOKEN_KEY, "Bearer " + SessionManager.INSTANCE.getAPIToken())
                         .build();
 
                 return chain.proceed(newRequest);
             }
         };
+    }
 
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(interceptor)
-                .addInterceptor(httpLoggingInterceptor).build();
+    private static OkHttpClient getOkHttpClient(boolean isSecured){
+        return new OkHttpClient.Builder()
+                .addInterceptor(getInterceptor(isSecured))
+                .addInterceptor(getHttpLoggingInterceptor()).build();
+    }
 
-        retrofit = new Retrofit.Builder()
+    public static Retrofit getRetrofit(Boolean isSecured){
+        return new Retrofit.Builder()
                 .baseUrl(APIConstants.API_BASE)
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
+                .client(getOkHttpClient(isSecured))
                 .build();
 
-        return retrofit;
     }
 
 }

@@ -9,32 +9,34 @@ import android.widget.Toast;
 
 import com.example.shiv.myapplication.config.ApiClient;
 import com.example.shiv.myapplication.config.SessionManager;
+import com.example.shiv.myapplication.dtos.Response;
 import com.example.shiv.myapplication.modals.User;
+import com.example.shiv.myapplication.repositories.AuthRepository;
 import com.example.shiv.myapplication.repositories.UserRepository;
 import com.example.shiv.myapplication.services.ServiceBinder;
 import com.example.shiv.myapplication.utils.Constants;
 import com.example.shiv.myapplication.utils.LoginUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends BaseActivity implements ServiceBinder {
 
     private long pressedTime;
     private EditText username;
-    private EditText code;
+    private EditText password;
     private UserRepository userRepository;
+    private AuthRepository authRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         SessionManager.build(getApplicationContext());
-        userRepository = ApiClient.getRetrofit().create(UserRepository.class);
+        userRepository = ApiClient.getRetrofit(true).create(UserRepository.class);
+        authRepository = ApiClient.getRetrofit(false).create(AuthRepository.class);
     }
 
     public void testMe(View view){
@@ -47,26 +49,32 @@ public class MainActivity extends BaseActivity implements ServiceBinder {
         User user = getLoginCredintials();
 
         if(user != null && !user.getUsername().equals("")){
+            Log.i("API-call", user.toString());
+            //Call<User> userByUsernameCall = userRepository.findUserByUsername(user.getUsername());
+            Call<Response<Map< String, Object>>> auth = authRepository.auth(user);
 
-            Call<User> userByUsernameCall = userRepository.findUserByUsername(user.getUsername());
             // Async API Call
-            userByUsernameCall.enqueue(new Callback<User>() {
+            auth.enqueue(new Callback<Response<Map< String, Object>>>() {
                 @Override
-                public void onResponse(Call<User> call, Response<User> response) {
+                public void onResponse(Call<Response<Map< String, Object>>> call, retrofit2.Response<Response<Map< String, Object>>> response) {
 
                     if(response.isSuccessful()) {
-                        User user = response.body();
-                        final Map<String, String> loginResult = authService.login(user);
-                        if(loginResult != null && loginResult.get(Constants.STATUS).equals(Constants.LOGIN_ATTRIBUTE.LOGIN_STATUS_SUCCESS)) {
-                            Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
-                            startActivity(intent);
+                        Response<Map< String, Object>> auth = response.body();
+                        if(auth.getStatus() == 200){
+                            final Map<String, String> loginResult = authService.login(auth.getData());
+                            if(loginResult != null && loginResult.get(Constants.STATUS).equals(Constants.LOGIN_ATTRIBUTE.LOGIN_STATUS_SUCCESS)) {
+                                Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                                startActivity(intent);
+                            }
                         }else{
                             Toast.makeText(MainActivity.this, "API not allow to user in the system", Toast.LENGTH_LONG).show();
                         }
+                    }else{
+                        Toast.makeText(MainActivity.this, "User not Authorized.", Toast.LENGTH_LONG).show();
                     }
                 }
                 @Override
-                public void onFailure(Call<User> call, Throwable t) {
+                public void onFailure(Call<Response<Map< String, Object>>> call, Throwable t) {
                     Toast.makeText(MainActivity.this, "API Down", Toast.LENGTH_LONG).show();
                     call.cancel();
                 }
@@ -77,16 +85,16 @@ public class MainActivity extends BaseActivity implements ServiceBinder {
     private User getLoginCredintials(){
 
         username = findViewById(R.id.username);
-        code = findViewById(R.id.code);
-        User user = new User( null, username.getText().toString(), code.getText().toString());
+        password = findViewById(R.id.password);
+        User user = new User( null, username.getText().toString(), password.getText().toString());
         user.setUsername(username.getText().toString());
-        user.setCode(code.getText().toString());
+        user.setPassword(password.getText().toString());
         Map<String , String> validationResult = LoginUtils.formValidation(user);
         if(validationResult.get(Constants.STATUS).equals(Constants.VALIDATION_STATUS_FAILED) &&
                 validationResult.get(Constants.ERROR).equals(Constants.LOGIN_ATTRIBUTE.USERNAME_PASSWORD_NOT_EMPTY)){
 
             username.setError("Username can not be empty.");
-            code.setError("Password can not be empty.");
+            password.setError("Password can not be empty.");
             return null;
         }
         return user;

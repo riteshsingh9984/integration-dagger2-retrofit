@@ -4,4 +4,8 @@
     <string name="app_greeting">Good Morning App!</string>
     <string name="username_hint">Type User name...</string>
     <string name="app_dashboard">Welocme in App!</string>
+    <string name="share">share</string>
+    <string name="options">options</string>
+    <string name="settings">settings</string>
+    <string name="help">help</string>
 </resources>
