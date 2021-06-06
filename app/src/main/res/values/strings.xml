@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="app_header">SHRIM</string>
+    <string name="app_greeting">Good Morning App!</string>
+    <string name="username_hint">Type User name...</string>
+    <string name="app_dashboard">Welocme in App!</string>
+</resources>
