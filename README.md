@@ -377,6 +377,6 @@ if(userResponse.isSuccessful()){
 
 ```
 
-> Avoid to use Sync calls because it's block user interaction.
+> Avoid to use Sync calls because it blocks user's interaction with UI.
 
 > Thanks
