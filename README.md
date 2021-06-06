@@ -1,5 +1,5 @@
 # integration-dagger2-retrofit
-Dagger2 and Retrofit integration
+Dagger2 and Retrofit2 integration
 
 ### Dagger2 Integration
 
