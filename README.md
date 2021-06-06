@@ -16,7 +16,7 @@ Dagger2 and Retrofit2 integration
 > So I just create them via dagger2 and why this, because I want to take care them by dagger2 and sharable across all activities.
 > Here , Sample how to create via using dagger2 and how module, component and activity communicate to each-other.
 
->My Class which will create by dagger 
+>My Class which will be created by dagger 
 
 ```
 package com.example.shiv.myapplication.services;
@@ -151,6 +151,11 @@ public interface ApplicationComponents {
    AuthService authService = applicationComponents.getAuthService();
    UserService userService = applicationComponents.getUserService();
 ```
+
+> In above snippet you can see there is used one class which we not created named as <b>DaggerApplicationComponents</b>.
+> DaggerApplicationComponents is auto generated class by dagger2 , whatever dagger2 component you will created.
+> Dagger2 will generate classes on project build with prefix 'Dagger+Your Component name'.
+> It means whenever you made changes in Module or Component then your project required to build for generate updated Daggerclasses.
 
 ### Retrofit2 Integration
 
