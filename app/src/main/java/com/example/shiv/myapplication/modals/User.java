@@ -23,6 +23,11 @@ public class User {
     private String branchCode;
     private String departmentCode;
 
+    public User(String email, String username) {
+        this.username = username;
+        this.emailId = email;
+    }
+
     public String getCrn() {
         return crn;
     }

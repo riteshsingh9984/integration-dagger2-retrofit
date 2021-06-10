@@ -18,7 +18,6 @@ import com.example.shiv.myapplication.utils.Constants;
 import com.example.shiv.myapplication.utils.LoginUtils;
 
 import java.util.Map;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -40,8 +39,10 @@ public class MainActivity extends BaseActivity implements ServiceBinder {
     }
 
     public void testMe(View view){
-        String data = authService.getTest("Raman");
-        Toast.makeText(this, data, Toast.LENGTH_LONG).show();
+        /*String data = authService.getTest("Raman");
+        Toast.makeText(this, data, Toast.LENGTH_LONG).show();*/
+        Intent intent = new Intent(MainActivity.this, IndexActivity.class);
+        startActivity(intent);
     }
 
     public void getLogin(View view){
@@ -65,6 +66,7 @@ public class MainActivity extends BaseActivity implements ServiceBinder {
                             if(loginResult != null && loginResult.get(Constants.STATUS).equals(Constants.LOGIN_ATTRIBUTE.LOGIN_STATUS_SUCCESS)) {
                                 Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
                                 startActivity(intent);
+
                             }
                         }else{
                             Toast.makeText(MainActivity.this, "API not allow to user in the system", Toast.LENGTH_LONG).show();
