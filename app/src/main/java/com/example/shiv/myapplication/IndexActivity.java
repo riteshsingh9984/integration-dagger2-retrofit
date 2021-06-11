@@ -188,7 +188,7 @@ public class IndexActivity extends BaseActivity  {
             holder.name.setText(user.getEmailId());
 
             Picasso.with(getApplicationContext())
-                    .load("https://avatars.githubusercontent.com/u/12725702?v=4")
+                    .load("http://shrim-local.com/images/dev/profile/launcher-shrim.png")
                     .into(holder.profileImg);
 
             return convertView;
