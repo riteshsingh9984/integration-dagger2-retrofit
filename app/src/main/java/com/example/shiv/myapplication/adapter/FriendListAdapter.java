@@ -33,6 +33,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
   @Override
   public int getItemCount() {
+
     return this.data.size();
   }
 
