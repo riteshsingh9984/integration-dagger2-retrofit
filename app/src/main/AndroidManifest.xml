@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.shiv.myapplication">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/launcher_shrim"
@@ -10,18 +12,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MainActivity"
-            android:theme="@style/AppIndexTheme">
+        <activity android:name=".FriendListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DashboardActivity"></activity>
-        <activity android:name=".UserActivity"></activity>
-        <activity android:name=".IndexActivity"></activity>
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppIndexTheme">
 
+        </activity>
+        <activity android:name=".DashboardActivity" />
+        <activity android:name=".UserActivity" />
+        <activity android:name=".IndexActivity" />
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
+
 </manifest>
